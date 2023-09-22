@@ -64,6 +64,35 @@ def zero_check(cnum):
         im = 0
     return complex(re,im)
 
+def add_new_item(item1,item2):
+    for op in [["+"], ["*"]]:
+        op.extend(item1)
+        op.extend(item2)
+        op, _ = parse(op, 0)
+        if (_ == None):
+            return
+        if type(op) != list:
+            op = [op]
+        tempList.append(op)
+    op = ['e']
+    op.extend(item1)
+    op.extend(item2)
+    op, _ = parse(op, 0)
+    if (_ == None):
+        return
+    if type(op) != list:
+        op = [op]
+    tempList.append(op)
+
+    op = ['e']
+    op.extend(item2)
+    op.extend(item1)
+    op, _ = parse(op, 0)
+    if (_ == None):
+        return
+    if type(op) != list:
+        op = [op]
+    tempList.append(op)
 
 if __name__ == '__main__':
     tolerance_1 = 1e-6
@@ -75,51 +104,27 @@ if __name__ == '__main__':
 
     # Your code here
 
-    for layer in range(4):
+    for layer in range(3):
 
         tempList = []
         for i1 in range(len(ansList)):
+            if(i1%100 == 0):
+                print(f"layer {layer}, i1={i1} out of {len(ansList)}")
             for i2 in range(i1,len(ansList)):
-                for op in [["+"], ["*"]]:
-                    op.extend(ansList[i1])
-                    op.extend(ansList[i2])
-                    op,_ = parse(op,0)
-                    if(_==None):
-                        continue
-                    if type(op) != list:
-                        op = [op]
-                    tempList.append(op)
-                op = ['e']
-                op.extend(ansList[i1])
-                op.extend(ansList[i2])
-                op,_ = parse(op,0)
-                if (_ == None):
-                    continue
-                if type(op) != list:
-                    op = [op]
-                tempList.append(op)
+                add_new_item(ansList[i1],ansList[i2])
 
-                op = ['e']
-                op.extend(ansList[i2])
-                op.extend(ansList[i1])
-                op, _ = parse(op, 0)
-                if (_ == None):
-                    continue
-                if type(op) != list:
-                    op = [op]
-                tempList.append(op)
         # remove repeat prefix expression
         ansList.extend(tempList)
         no_duplicates = []
         for item1 in ansList:
             assert (len(item1) == 1)
-            item1[0] = zero_check(item1[0])
+            t = zero_check(item1[0])
             flag_duplicate = 1
             for item2 in no_duplicates:
-                if(cmath.isclose(item1[0], item2[0], rel_tol=tolerance_1, abs_tol=tolerance_1)):
+                if(cmath.isclose(t, item2[0], rel_tol=tolerance_1, abs_tol=tolerance_1)):
                     flag_duplicate = 0
             if(flag_duplicate):
-                no_duplicates.append(item1)
+                no_duplicates.append([t])
         ansList = no_duplicates
 
 
@@ -127,8 +132,8 @@ if __name__ == '__main__':
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Time taken: {elapsed_time} seconds")
-
-    time.sleep(3)
+    print(f"length of answer = {len(ansList)}")
+    time.sleep(30)
 
     for i in ansList:
         print(i)
