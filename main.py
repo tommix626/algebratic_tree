@@ -2,13 +2,12 @@ import cmath
 import time
 
 ansList = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
-ansList[1] = [1, -1]
-allElementSet = set([])  # hashset for all the values generated to detect redundancy.
-tolerance_1 = 1e-1
-tolerance_2 = 1e-12
+ansList[1] = [1+0j, -1+0j]
+allElementSet = set([1+0j, -1+0j])  # hashset for all the values generated to detect redundancy.
+tolerance_1 = 1e-12
 
 
-def limit_precision(cnum, precision=9):
+def limit_precision(cnum, precision=7):
     """
     Limit the number of effective digits for a complex number.
     """
@@ -67,11 +66,25 @@ def combine_items(item1, item2, layer):
         add_new_item(result, layer)
 
 
+def post_processing(item):
+    if cmath.isclose(item, 0, rel_tol=tolerance_1, abs_tol=tolerance_1):
+        return 0
+    if abs(item.real)<tolerance_1:
+        return str(item.imag) + "i"
+    if abs(item.imag)<tolerance_1:
+        return str(item.real)
+    if item.imag > 0:
+        return str(item.real) + "+" + str(item.imag) + "i"
+    else:
+        return str(item.real) + str(item.imag) + "i"
+
+
+
 if __name__ == '__main__':
 
     start_time = time.time()
 
-    for layer in range(3, 27, 2):
+    for layer in range(3, 17, 2):
         for left_complexity in range(1, (layer + 1) // 2, 2):
             # print(f"left_complexity = {left_complexity}")
             for i1 in ansList[left_complexity]:
@@ -82,9 +95,16 @@ if __name__ == '__main__':
         elapsed_time = end_time - start_time
         print(f"Time taken: {elapsed_time} seconds")
     anscnt = 0
-    for i in range(1, 27, 2):
+    for i in range(1, 17, 2):
         anscnt+=len(ansList[i])
         print(f"all layer {i} has len {anscnt}")
+
+    a = eval(input("continue printing to which layer?"))
+    for i in range(1, a+1, 2):
+        for item in ansList[i]:
+            # print(item,end="\t")
+            print(post_processing(item))
+
     #     for i1 in range(len(ansList)):  # item1 from the old List
     #         for i2 in range(i1, len(newList)):  # item2 from the new List
     #             add_new_item(ansList[i1], newList[i2])
