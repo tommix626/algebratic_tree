@@ -4,11 +4,11 @@ import time
 ansList = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
 ansList[1] = [1, -1]
 allElementSet = set([])  # hashset for all the values generated to detect redundancy.
-tolerance_1 = 1e-6
+tolerance_1 = 1e-1
 tolerance_2 = 1e-12
 
 
-def limit_precision(cnum, precision=6):
+def limit_precision(cnum, precision=9):
     """
     Limit the number of effective digits for a complex number.
     """
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    for layer in range(3, 30, 2):
+    for layer in range(3, 27, 2):
         for left_complexity in range(1, (layer + 1) // 2, 2):
             # print(f"left_complexity = {left_complexity}")
             for i1 in ansList[left_complexity]:
@@ -81,7 +81,10 @@ if __name__ == '__main__':
         end_time = time.time()
         elapsed_time = end_time - start_time
         print(f"Time taken: {elapsed_time} seconds")
-
+    anscnt = 0
+    for i in range(1, 27, 2):
+        anscnt+=len(ansList[i])
+        print(f"all layer {i} has len {anscnt}")
     #     for i1 in range(len(ansList)):  # item1 from the old List
     #         for i2 in range(i1, len(newList)):  # item2 from the new List
     #             add_new_item(ansList[i1], newList[i2])
